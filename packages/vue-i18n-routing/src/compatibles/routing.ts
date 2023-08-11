@@ -153,6 +153,7 @@ export function localeLocation(
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export function resolveRoute(this: RoutingProxy, route: any, locale?: Locale): any {
+  // trigger workflow
   const router = this.router
   const i18n = this.i18n
   // console.log('resolveRoute', i18n.locale, Object.keys(i18n))
