@@ -5,11 +5,13 @@ await setup({
   browser: true
 })
 
+const logger = console.log
 test('i18n & routing', async () => {
   const page = await createPage()
+  page.on('console', (...args) => {
+    logger(...args)
+  })
   await page.goto(url('/'))
-
-  page.on('console', (...args) => console.log(...args))
 
   // initial title
   const header = await page.locator('h1.green')

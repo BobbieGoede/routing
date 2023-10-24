@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import type { Prefixable, SwitchLocalePathIntercepter } from './compatibles'
 import type { STRATEGIES } from './constants'
 import type { Locale } from '@intlify/vue-i18n-bridge'
 import type { RouteConfig as __Route, RouterOptions } from '@intlify/vue-router-bridge'
 
-type UnionToIntersection<T> = (T extends any ? (k: T) => void : never) extends (k: infer U) => void ? U : never
+type UnionToIntersection<T> = (T extends unknown ? (k: T) => void : never) extends (k: infer U) => void ? U : never
 type _Route = UnionToIntersection<__Route>
 
 /**
@@ -58,7 +56,7 @@ export type Directions = 'ltr' | 'rtl' | 'auto'
  *
  * @public
  */
-export interface LocaleObject extends Record<string, any> {
+export interface LocaleObject extends Record<string, unknown> {
   code: Locale
   name?: string
   dir?: Directions

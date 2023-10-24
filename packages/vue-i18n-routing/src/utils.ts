@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { isString, isSymbol, isFunction } from '@intlify/shared'
-import { isVueRouter4 } from '@intlify/vue-router-bridge'
-import { isRef, isVue2 } from 'vue-demi'
+import { isRef, isVue2, unref } from 'vue-demi'
 
 import type { LocaleObject, Strategies, BaseUrlResolveHandler, I18nRoutingOptions } from './types'
 import type { I18n, Composer, Locale, VueI18n, ExportedGlobalComposer } from '@intlify/vue-i18n-bridge'
@@ -65,24 +64,36 @@ export function getNormalizedLocales(locales: string[] | LocaleObject[]): Locale
   return normalized
 }
 
-export function isI18nInstance(i18n: any): i18n is I18n {
-  return i18n != null && 'global' in i18n && 'mode' in i18n
+export function isI18nInstance(i18n: unknown): i18n is I18n {
+  return i18n != null && typeof i18n === 'object' && 'global' in i18n && 'mode' in i18n
 }
 
-export function isComposer(target: any): target is Composer {
-  return target != null && !('__composer' in target) && isRef(target.locale)
+export function isComposer(target: unknown): target is Composer {
+  return (
+    target != null &&
+    typeof target === 'object' &&
+    !('__composer' in target) &&
+    'locale' in target &&
+    isRef(target.locale)
+  )
 }
 
-export function isVueI18n(target: any): target is VueI18n {
-  return target != null && '__composer' in target
+export function isVueI18n(target: unknown): target is VueI18n {
+  return target != null && typeof target === 'object' && '__composer' in target
 }
 
-export function isExportedGlobalComposer(target: any): target is ExportedGlobalComposer {
-  return target != null && !('__composer' in target) && !isRef(target.locale)
+export function isExportedGlobalComposer(target: unknown): target is ExportedGlobalComposer {
+  return (
+    target != null &&
+    typeof target === 'object' &&
+    !('__composer' in target) &&
+    'locale' in target &&
+    !isRef(target.locale)
+  )
 }
 
-export function isLegacyVueI18n(target: any): target is Pick<VueI18n, 'locale'> {
-  return target != null && ('__VUE_I18N_BRIDGE__' in target || '_sync' in target)
+export function isLegacyVueI18n(target: unknown): target is Pick<VueI18n, 'locale'> {
+  return target != null && typeof target === 'object' && ('__VUE_I18N_BRIDGE__' in target || '_sync' in target)
 }
 
 export function getComposer(i18n: I18n | VueI18n | Composer): Composer {
@@ -175,13 +186,7 @@ export function adjustRoutePathForTrailingSlash(
 export function toRawRoute(
   maybeRoute: Ref<RouteLocationNormalizedLoaded> | Route
 ): RouteLocationNormalizedLoaded | Route {
-  return isVueRouter4
-    ? isRef(maybeRoute)
-      ? maybeRoute.value
-      : maybeRoute
-    : isRef(maybeRoute)
-    ? maybeRoute.value
-    : maybeRoute
+  return unref<RouteLocationNormalizedLoaded | Route>(maybeRoute)
 }
 
 export function getRouteName(routeName?: string | symbol | null) {
@@ -194,7 +199,7 @@ export function getRouteName(routeName?: string | symbol | null) {
 }
 
 export function getLocaleRouteName(
-  routeName: string | null,
+  routeName: symbol | string | undefined | null,
   locale: Locale,
   {
     defaultLocale,

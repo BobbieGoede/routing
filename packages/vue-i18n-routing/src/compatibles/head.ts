@@ -58,7 +58,7 @@ export function localeHead(
     }
 
     addHreflangLinks.call(this, locales as LocaleObject[], unref(i18n.baseUrl), metaObject.link, identifierAttribute)
-    // eslint-disable-next-line prettier/prettier
+    // prettier/prettier
     addCanonicalLinksAndOgUrl.call(
       this,
       unref(i18n.baseUrl),
@@ -140,7 +140,7 @@ function addCanonicalLinksAndOgUrl(
 ) {
   const route = this.route
   const currentRoute = localeRoute.call(this, {
-    ...(route as any), // eslint-disable-line @typescript-eslint/no-explicit-any
+    ...route,
     name: getRouteBaseName.call(this, route)
   })
 
